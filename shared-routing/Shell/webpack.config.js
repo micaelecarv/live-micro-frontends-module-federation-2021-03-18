@@ -1,9 +1,10 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-// const ModuleFederationPlugin = require("webpack").container
-//   .ModuleFederationPlugin;
+const ModuleFederationPlugin = require("webpack").container
+  .ModuleFederationPlugin;
 
 const path = require("path");
 const deps = require("./package.json").dependencies;
+
 module.exports = {
   entry: "./src/index",
   mode: "development",
@@ -50,33 +51,34 @@ module.exports = {
     ],
   },
   plugins: [
-    // new ModuleFederationPlugin({
-    //   name: "shell",
-    //   filename: "remoteEntry.js",
-    //   remotes: {
-    //     productdetails: "productdetails@http://localhost:3002/remoteEntry.js",
-    //     productlist: "productlist@http://localhost:3001/remoteEntry.js",
-    //     shell: "shell@http://localhost:3000/remoteEntry.js",
-    //   },
-    //   exposes: {
-    //     "./Shell": "./src/Shell",
-    //     "./Service": "./src/Service",
-    //   },
-    //   shared: [
-    //     {
-    //       ...deps,
-    //       react: {
-    //         singleton: true,
-    //         requiredVersion: deps.react,
-    //       },
-    //       "react-dom": {
-    //         singleton: true,
-    //         requiredVersion: deps["react-dom"],
-    //       },
-    //     },
-    //     "./src/Service",
-    //   ],
-    // }),
+    new ModuleFederationPlugin({
+      name: "shell",
+      filename: "remoteEntry.js",
+      remotes: {
+        productdetails: "productdetails@http://localhost:3002/remoteEntry.js",
+        productlist: "productlist@http://localhost:3001/remoteEntry.js",
+        shell: "shell@http:localhost://3000/remoteEntry.js",
+      },
+      exposes: {
+        "./Shell": "./src/Shell",
+        "./Service": "./src/Service",
+      },
+      shared: [
+        {
+          ...deps,
+          react: {
+            singleton: true,
+            requiredVersion: deps.react,
+          },
+          "react-dom": {
+            singleton: true,
+            requiredVersion: deps["react-dom"],
+          },
+          moment: "^2.29.1",
+        },
+        "./src/Service",
+      ],
+    }),
     new HtmlWebpackPlugin({
       template: "./public/index.html",
     }),
